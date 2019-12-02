@@ -1,8 +1,10 @@
 package main
 
-import "github.com/gin-gonic/gin"
-
-import "net/http"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/nexmoinc/alice/models"
+	"net/http"
+)
 
 func main() {
 	router := gin.Default()
@@ -24,9 +26,18 @@ func main() {
 				EndOnKey: "#",
 			},
 		}
-
 		c.JSON(http.StatusOK, temp)
+	})
+	router.POST("/recoding", func(c *gin.Context) {
+		// unmarshal the recoding message
+		var json models.RecordingMessage
+		if err := c.ShouldBindJSON(&json); err != nil {
+			c.JSON(http.StatusOK, nil)
+			return
+		}
 	})
 
 	router.Run(":8080")
 }
+
+// ngrok http 8080
