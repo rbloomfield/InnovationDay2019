@@ -10,9 +10,9 @@ import (
 )
 
 const port string = ":8080"
-const NgrokAddress string = "http://a9091a98.ngrok.io"
+const NgrokAddress string = "http://7340bf94.ngrok.io"
 const EventURL string = "/event"
-const AnswerURL string = "/answer"
+const AnswerURL string = "/"
 const RequestBin string = "https://en8fseqlqklpv.x.pipedream.net/"
 const NameEventURL string = "/name"
 const AliceURL string = "http://ec2-54-165-140-92.compute-1.amazonaws.com:8080"
@@ -64,7 +64,7 @@ func main() {
 			Action:       "input",
 			Speech:       &speechAction,
 			EndOnSilence: "2",
-			EventURL:     []string{"http://a9091a98.ngrok.io" + NameEventURL},
+			EventURL:     []string{NgrokAddress + NameEventURL},
 		}
 		talk := models.NCCO{
 			Action: "talk",
@@ -72,7 +72,7 @@ func main() {
 		}
 		record := models.NCCO{
 			Action:       "record",
-			EventURL:     []string{"http://a9091a98.ngrok.io" + EventURL},
+			EventURL:     []string{NgrokAddress + EventURL},
 			EndOnKey:     "#",
 			EndOnSilence: "2",
 			Format:       "wav",
@@ -90,6 +90,10 @@ func main() {
 			record,
 			talk,
 			record,
+			models.NCCO{
+				Action: "talk",
+				Text:   "Thank you",
+			},
 		}
 		//speechAction.UUID = []string{c.Query("uuid")}
 		c.JSON(http.StatusOK,
