@@ -5,7 +5,14 @@ Innovation day 2019 project for user recognition
 
 
 - [x] unmarshal at event endpoint.
-- [ ] store the recodring url
-- [ ] repeat for 3 times.
-- [ ] store everything to keep track of call_ids (and users? maybe a map[call_id] : list url)
-- [ ] send recordings to alice
+- [x] store the recodring url
+- [x] repeat for 3 times.
+- [x]] store everything to keep track of call_ids (and users? maybe a map[call_id] : list url)
+- [x] send recordings to alice
+# Authentication :
+Get User by passphrase
+- [ ] answer inbound call
+- [ ] prompt for name
+- [ ] asr on name
+- [ ] prompt for and record passphrase
+- [ ] look up user from backend

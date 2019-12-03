@@ -14,6 +14,7 @@ type NCCO struct {
 	Timeout      string       `json:"timeout,omitempty"`
 	EndOnSilence string       `json:"endOnSilence,omitempty"`
 	Speech       *SpeechInput `json:"speech,omitempty"`
+	Format       string       `json:"format,omitempty"`
 }
 
 type RecordingMessage struct {
