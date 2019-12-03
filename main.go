@@ -12,9 +12,12 @@ const port string = ":8080"
 const eventURL string = "/"
 const answerURL string = "/answer"
 
-var call_id_to_recordings map[string][]string = make(map[string][]string)
+var ConversationUUIDToRecordings map[string][]string = make(map[string][]string)
 
 func main() {
+
+	toAliceChannel := make(chan [3]string, 10)
+
 	router := gin.Default()
 
 	talk := models.NNCO{
@@ -25,7 +28,7 @@ func main() {
 		Action:       "record",
 		EventURL:     []string{"http://a9091a98.ngrok.io" + answerURL},
 		EndOnKey:     "#",
-		EndOnSilence: "3",
+		EndOnSilence: "2",
 	}
 	mainNCCO := []models.NNCO{
 		talk,
@@ -51,8 +54,8 @@ func main() {
 		}
 
 		fmt.Printf("%#v", json)
-		if i, ok := call_id_to_recordings[json.RecordingURL]; ok {
-			call_id_to_recordings[json.RecordingURL] = append(i, json.RecordingURL)
+		if i, ok := ConversationUUIDToRecordings[json.ConversationUUID]; ok {
+			ConversationUUIDToRecordings[json.ConversationUUID] = append(i, json.RecordingURL)
 			if len(i) >= 3 {
 				// here we should forward it on
 				fmt.Println("Forward to alice")
@@ -61,7 +64,7 @@ func main() {
 			c.JSON(http.StatusOK, nil)
 			return
 		}
-		call_id_to_recordings[json.RecordingURL] = append(make([]string, 3), json.RecordingURL)
+		ConversationUUIDToRecordings[json.ConversationUUID] = append(make([]string, 3), json.RecordingURL)
 		c.JSON(http.StatusOK, nil)
 
 	})
