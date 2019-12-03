@@ -25,3 +25,22 @@ type RecordingMessage struct {
 	ConversationUUID string `json:"conversation_uuid"`
 	Timestamp        string `json:"timestamp"`
 }
+
+type ASRResult struct {
+	Confidence string `json:"confidence"`
+	Text       string `json:"text"`
+}
+
+type ASRResponse struct {
+	Speech struct {
+		TimeoutReason string      `json:"timeout_reason"`
+		Results       []ASRResult `json:"results"`
+	}
+	DTMF struct {
+		// "digits": null,
+		// "timed_out": false
+	} `json:"dtmf"`
+	UUID             string `json:"uuid"`
+	ConversationUUID string `json:"conversation_uuid"`
+	Timestamp        string `json:"timestamp"`
+}
