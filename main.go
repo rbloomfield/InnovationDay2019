@@ -17,22 +17,23 @@ var call_id_to_recordings map[string][]string = make(map[string][]string)
 func main() {
 	router := gin.Default()
 
-	mainNCCO := []struct {
-		Text     string   `json:"text,omitempty"`
-		Action   string   `json:"action"`
-		EventURL []string `json:"eventUrl,omitempty"`
-		EndOnKey string   `json:"endOnKey,omitempty"`
-		Timeout  string   `json:"timeout,omitempty"`
-	}{
-		{
-			Action: "talk",
-			Text:   "Please say your passphrase",
-		},
-		{
-			Action:   "record",
-			EventURL: []string{"http://a9091a98.ngrok.io" + answerURL},
-			EndOnKey: "#",
-		},
+	talk := models.NNCO{
+		Action: "talk",
+		Text:   "Please say your passphrase",
+	}
+	record := models.NNCO{
+		Action:       "record",
+		EventURL:     []string{"http://a9091a98.ngrok.io" + answerURL},
+		EndOnKey:     "#",
+		EndOnSilence: "3",
+	}
+	mainNCCO := []models.NNCO{
+		talk,
+		record,
+		talk,
+		record,
+		talk,
+		record,
 	}
 	router.GET(eventURL, func(c *gin.Context) {
 		c.JSON(http.StatusOK, mainNCCO)
@@ -54,14 +55,14 @@ func main() {
 			call_id_to_recordings[json.RecordingURL] = append(i, json.RecordingURL)
 			if len(i) >= 3 {
 				// here we should forward it on
-				c.JSON(http.StatusOK, nil)
-				return
+				fmt.Println("Forward to alice")
+
 			}
+			c.JSON(http.StatusOK, nil)
+			return
 		}
 		call_id_to_recordings[json.RecordingURL] = append(make([]string, 3), json.RecordingURL)
-		fmt.Println("Replay NCCO")
-
-		c.JSON(http.StatusOK, mainNCCO)
+		c.JSON(http.StatusOK, nil)
 
 	})
 
