@@ -11,26 +11,53 @@ import (
 const port string = ":8080"
 const eventURL string = "/"
 const answerURL string = "/answer"
+const requestBin string = "https://en8fseqlqklpv.x.pipedream.net/"
 
 var ConversationUUIDToRecordings map[string][]string = make(map[string][]string)
 
+/*
+func SendToAlice(SendToAlice []string) {
+
+	body := struct {
+		Name string `json:name`
+		URL  string `json:url`
+	}{
+		Name: "",
+	}
+	req := http.NewRequest("POST", "url")
+}
+*/
 func main() {
 
-	toAliceChannel := make(chan [3]string, 10)
+	//toAliceChannel := make(chan [3]string, 10)
 
 	router := gin.Default()
 
-	talk := models.NNCO{
+	asrAction := models.NCCO{
+		Action: "input",
+		Speech: &models.SpeechInput{
+			Context:  []string{"name"},
+			Language: "en-gb",
+			// UUID:,
+		},
+		EndOnSilence: "2",
+	}
+	talk := models.NCCO{
 		Action: "talk",
 		Text:   "Please say your passphrase",
 	}
-	record := models.NNCO{
+	record := models.NCCO{
 		Action:       "record",
 		EventURL:     []string{"http://a9091a98.ngrok.io" + answerURL},
 		EndOnKey:     "#",
 		EndOnSilence: "2",
 	}
-	mainNCCO := []models.NNCO{
+	mainNCCO := []models.NCCO{
+		models.NCCO{
+			Action: "talk",
+			Text:   "Please say your name",
+		},
+		asrAction,
 		talk,
 		record,
 		talk,
@@ -59,6 +86,8 @@ func main() {
 			if len(i) >= 3 {
 				// here we should forward it on
 				fmt.Println("Forward to alice")
+				// res := SendToAlice(i)
+				// c.JSON(http.StatusOK, res)
 
 			}
 			c.JSON(http.StatusOK, nil)
