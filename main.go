@@ -26,13 +26,6 @@ var ConversationUUIDToRecordings map[string]*NameRecordings = make(map[string]*N
 
 func AddUser(i NameRecordings) bool {
 
-	// body := struct {
-	// 	Name string `json:name`
-	// 	URL  string `json:url`
-	// }{
-	// 	Name: "",
-	// }
-	// req := http.NewRequest("POST", "url")
 	// Create a Resty Client
 	client := resty.New()
 
@@ -43,12 +36,11 @@ func AddUser(i NameRecordings) bool {
 	if err != nil {
 		fmt.Println("error : ", err.Error())
 	}
+
 	return res.StatusCode() == http.StatusOK
 }
 
 func main() {
-
-	//toAliceChannel := make(chan [3]string, 10)
 
 	router := gin.Default()
 
@@ -78,6 +70,8 @@ func main() {
 			Format:       "wav",
 		}
 
+		// Changes to this require a change to the
+		// counter in the EventURL handler
 		mainNCCO := []models.NCCO{
 			models.NCCO{
 				Action: "talk",
@@ -85,11 +79,20 @@ func main() {
 			},
 			asrAction,
 			talk,
-			record,
+			record, // 1
 			talk,
-			record,
+			record, // 2
 			talk,
-			record,
+			record, // 3
+			talk,
+			record, // 4
+			talk,
+			record, // 5
+			talk,
+			record, // 6
+			talk,
+			record, // 7
+
 			models.NCCO{
 				Action: "talk",
 				Text:   "Thank you",
@@ -123,7 +126,7 @@ func main() {
 		// unmarshal the recoding message
 		var rec models.RecordingMessage
 		if err := c.ShouldBindJSON(&rec); err != nil {
-			// bad request
+			// bad request could not identify
 			c.JSON(http.StatusBadRequest, nil)
 			return
 		}
@@ -136,8 +139,8 @@ func main() {
 			// fmt.Printf("[DEBUG] appending to recordings for: %s\n", rec.ConversationUUID)
 			nameRecordings.Recordings = append(nameRecordings.Recordings, recordingURL)
 
-			if len(nameRecordings.Recordings) >= 3 { // enough instances to pass on
-				// fmt.Println("[DEBUG] Forward to alice")
+			if len(nameRecordings.Recordings) >= 7 { // enough instances to pass on
+				//  Forward to Alice
 				res := AddUser(*nameRecordings)
 				c.JSON(http.StatusOK, res)
 			}
