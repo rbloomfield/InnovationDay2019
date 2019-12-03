@@ -33,40 +33,46 @@ func main() {
 
 	router := gin.Default()
 
-	asrAction := models.NCCO{
-		Action: "input",
-		Speech: &models.SpeechInput{
+	router.GET(eventURL, func(c *gin.Context) {
+
+		speechAction := models.SpeechInput{
 			Context:  []string{"name"},
 			Language: "en-gb",
 			// UUID:,
-		},
-		EndOnSilence: "2",
-	}
-	talk := models.NCCO{
-		Action: "talk",
-		Text:   "Please say your passphrase",
-	}
-	record := models.NCCO{
-		Action:       "record",
-		EventURL:     []string{"http://a9091a98.ngrok.io" + answerURL},
-		EndOnKey:     "#",
-		EndOnSilence: "2",
-	}
-	mainNCCO := []models.NCCO{
-		models.NCCO{
+		}
+		asrAction := models.NCCO{
+			Action:       "input",
+			Speech:       &speechAction,
+			EndOnSilence: "2",
+		}
+		talk := models.NCCO{
 			Action: "talk",
-			Text:   "Please say your name",
-		},
-		asrAction,
-		talk,
-		record,
-		talk,
-		record,
-		talk,
-		record,
-	}
-	router.GET(eventURL, func(c *gin.Context) {
-		c.JSON(http.StatusOK, mainNCCO)
+			Text:   "Please say your passphrase",
+		}
+		record := models.NCCO{
+			Action:       "record",
+			EventURL:     []string{"http://a9091a98.ngrok.io" + answerURL},
+			EndOnKey:     "#",
+			EndOnSilence: "2",
+		}
+		mainNCCO := []models.NCCO{
+			models.NCCO{
+				Action: "talk",
+				Text:   "Please say your name",
+			},
+			asrAction,
+			talk,
+			record,
+			talk,
+			record,
+			talk,
+			record,
+		}
+
+		speechAction.UUID = []string{c.Query("uuid")}
+		c.JSON(http.StatusOK,
+
+			mainNCCO)
 	})
 
 	router.POST(answerURL, func(c *gin.Context) {

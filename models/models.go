@@ -3,7 +3,7 @@ package models
 type SpeechInput struct {
 	Context  []string `json:"context,omitempty"`
 	Language string   `json:"language,omitempty"`
-	UUID     []string `json:"uuid,omitempty"`
+	UUID     []string `json:"uuid"`
 }
 
 type NCCO struct {
