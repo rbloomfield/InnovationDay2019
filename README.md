@@ -11,8 +11,8 @@ Innovation day 2019 project for user recognition
 - [x] send recordings to alice
 # Authentication :
 Get User by passphrase
-- [ ] answer inbound call
-- [ ] prompt for name
-- [ ] asr on name
-- [ ] prompt for and record passphrase
-- [ ] look up user from backend
+- [x] answer inbound call
+- [x] prompt for name
+- [x] asr on name
+- [x] prompt for and record passphrase
+- [x] look up user from backend
