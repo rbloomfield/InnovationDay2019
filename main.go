@@ -3,19 +3,21 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty"
 	"github.com/nexmoinc/alice-client/models"
 )
 
-const port string = ":8080"
-const NgrokAddress string = "http://7340bf94.ngrok.io"
+const Port string = ":8082"
 const EventURL string = "/event"
 const AnswerURL string = "/"
 const RequestBin string = "https://en8fseqlqklpv.x.pipedream.net/"
 const NameEventURL string = "/name"
 const AliceURL string = "http://ec2-54-165-140-92.compute-1.amazonaws.com:8080"
+
+var NgrokAddress string = "" //http://3d571769.ngrok.io"
 
 type NameRecordings struct {
 	Name       string   `json:"name"`
@@ -153,7 +155,15 @@ func main() {
 		c.JSON(http.StatusBadRequest, nil)
 	})
 
-	router.Run(port)
+	router.Run(Port)
 }
 
 // ngrok http 8080
+
+func init() {
+
+	if ngrok := os.Getenv("NGROK_ADDRESS"); ngrok != "" {
+		fmt.Println("[INFO] Using NGROK_ADDRESS env var : " + ngrok)
+		NgrokAddress = ngrok
+	}
+}
